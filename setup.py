@@ -24,7 +24,7 @@ from setuptools import setup
 
 setup(
     name="brax",
-    version="0.10.0",
+    version="0.10.3",
     description="A differentiable physics engine written in JAX.",
     author="Brax Authors",
     author_email="no-reply@google.com",
@@ -56,8 +56,7 @@ setup(
         "mujoco-mjx",
         "numpy",
         "optax",
-        # TODO: remove Pillow and pytinyrenderer after dropping
-        # legacy v1 code
+        # TODO: remove pytinyrenderer after dropping legacy v1 code
         "Pillow",
         "pytinyrenderer",
         "scipy",

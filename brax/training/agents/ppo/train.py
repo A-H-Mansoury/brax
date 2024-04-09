@@ -370,8 +370,8 @@ def train(
     return training_state, env_state, metrics  # pytype: disable=bad-return-type  # py311-upgrade
 
   if previous_params != None:
-    previous_policy = previous_params[1]
-    previous_value = previous_params[2]
+    previous_policy = previous_params[0]
+    previous_value = previous_params[1]
     init_params = ppo_losses.PPONetworkParams(
       policy=previous_policy,
       value=previous_value)

@@ -133,6 +133,38 @@ def compute_ppo_loss(
   data = jax.tree_util.tree_map(lambda x: jnp.swapaxes(x, 0, 1), data)
   policy_logits = policy_apply(normalizer_params, params.policy,
                                data.observation)
+  obs = data.observation
+  mirrored_observation = jnp.concatenate([
+            obs[0:8],
+            obs[14:20],
+            obs[8:14],
+            obs[23:26],
+            obs[20:23],
+            obs[26:33],
+            obs[39:45],
+            obs[33:39],
+            obs[48:51],
+            obs[45:48],
+            obs[51:54],
+            obs[60:66],
+            obs[54:60],
+            obs[69:72],
+            obs[66:69]
+        ])
+        
+
+  policy_logits_of_mirrored_observation = policy_apply(normalizer_params, params.policy,
+                               data.observation)
+  
+  mirrored_policy_logits_of_mirrored_observation = jnp.concatenate([
+          policy_logits_of_mirrored_observation[0:3],
+          policy_logits_of_mirrored_observation[9:15],
+          policy_logits_of_mirrored_observation[3:9],
+          policy_logits_of_mirrored_observation[18:21],
+          policy_logits_of_mirrored_observation[15:18]
+        ])
+  
+  symmetry_loss = jnp.mean(jnp.square(policy_logits_of_mirrored_observation - mirrored_policy_logits_of_mirrored_observation))
 
   baseline = value_apply(normalizer_params, params.value, data.observation)
 
@@ -173,10 +205,11 @@ def compute_ppo_loss(
   entropy = jnp.mean(parametric_action_distribution.entropy(policy_logits, rng))
   entropy_loss = entropy_cost * -entropy
 
-  total_loss = policy_loss + v_loss + entropy_loss
+  total_loss = policy_loss + v_loss + entropy_loss + symmetry_loss
   return total_loss, {
       'total_loss': total_loss,
       'policy_loss': policy_loss,
       'v_loss': v_loss,
-      'entropy_loss': entropy_loss
+      'entropy_loss': entropy_loss,
+      'symmetry_loss': symmetry_loss
   }

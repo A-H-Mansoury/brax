@@ -149,7 +149,12 @@ def compute_ppo_loss(
             obs[60:66],
             obs[54:60],
             obs[69:72],
-            obs[66:69]
+            obs[66:69],
+            obs[72:81],
+            obs[87:93],
+            obs[81:87],
+            obs[96:99],
+            obs[93:96],
         ])
         
 

@@ -170,7 +170,8 @@ def compute_ppo_loss(
         ])
   
   symmetry_loss = jnp.mean(jnp.square(policy_logits_of_mirrored_observation - mirrored_policy_logits_of_mirrored_observation))
-
+  symmetry_loss = jnp.exp(symmetry_loss)
+      
   baseline = value_apply(normalizer_params, params.value, data.observation)
 
   bootstrap_value = value_apply(normalizer_params, params.value,
